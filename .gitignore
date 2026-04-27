@@ -1,0 +1,15 @@
+# Node
+node_modules/
+
+# Angular
+dist/
+
+# .NET
+bin/
+obj/
+
+# OS
+.DS_Store
+
+# Env
+.env
