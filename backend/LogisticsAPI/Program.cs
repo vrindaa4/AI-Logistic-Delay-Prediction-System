@@ -1,7 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-
+builder.Services.AddSingleton<IShipmentRepository, ShipmentRepository>();
+builder.Services.AddScoped<ShipmentService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
