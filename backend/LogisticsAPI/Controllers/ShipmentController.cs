@@ -1,23 +1,30 @@
-[ApiController]
-[Route("api/[controller]")]
-public class ShipmentController : ControllerBase
+using Microsoft.AspNetCore.Mvc;
+using LogisticsAPI.Models;
+using LogisticsAPI.Services;
+
+namespace LogisticsAPI.Controllers
 {
-    private readonly ShipmentService _service;
-
-    public ShipmentController(ShipmentService service)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ShipmentController : ControllerBase
     {
-        _service = service;
-    }
+        private readonly ShipmentService _service;
 
-    [HttpGet]
-    public IActionResult Get()
-    {
-        return Ok(_service.GetShipments());
-    }
+        public ShipmentController(ShipmentService service)
+        {
+            _service = service;
+        }
 
-    [HttpPost]
-    public IActionResult Create(Shipment shipment)
-    {
-        return Ok(_service.CreateShipment(shipment));
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(_service.GetShipments());
+        }
+
+        [HttpPost]
+        public IActionResult Create(Shipment shipment)
+        {
+            return Ok(_service.CreateShipment(shipment));
+        }
     }
 }
