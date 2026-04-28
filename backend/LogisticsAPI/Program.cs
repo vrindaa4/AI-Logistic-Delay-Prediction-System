@@ -11,6 +11,8 @@ builder.Services.AddSwaggerGen();
 // Dependency Injection
 builder.Services.AddSingleton<IShipmentRepository, ShipmentRepository>();
 builder.Services.AddScoped<ShipmentService>();
+builder.Services.AddScoped<PredictionService>();
+
 
 var app = builder.Build();
 

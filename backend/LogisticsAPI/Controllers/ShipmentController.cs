@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using LogisticsAPI.Models;
 using LogisticsAPI.Services;
-
+using LogisticsAPI.DTOs;
 namespace LogisticsAPI.Controllers;
 [ApiController]
 [Route("api/[controller]")]
@@ -31,26 +31,25 @@ public class ShipmentController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateShipmentDto dto)
+    public IActionResult Create(CreateShipmentDto dto){
+    var shipment = new Shipment
     {
-        var shipment = _service.Create(dto);
+        Origin = dto.Origin,
+        Destination = dto.Destination,
+        Status = "Created",
+        Carrier = "Default Carrier",
+        TrackingNumber = Guid.NewGuid().ToString(),
+        ExpectedDeliveryDate = DateTime.Now.AddDays(3)
+    };
 
-        var prediction = await _predictionService.PredictDelay(new DTOs.PredictionRequestDto
-        {
-            Origin = dto.Origin,
-            Destination = dto.Destination,
-            ExpectedDeliveryDate = dto.ExpectedDeliveryDate
-        });
+    var prediction = _predictionService.PredictDelay();
 
-        return Ok(new { shipment, prediction });
-    }
-
-    [HttpPut("{id}")]
-    public IActionResult UpdateStatus(int id, UpdateShipmentStatusDto dto)
+    return Ok(new
     {
-        _service.UpdateStatus(id, dto.Status);
-        return Ok();
-    }
+        shipment,
+        prediction
+    });
+}
 
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)

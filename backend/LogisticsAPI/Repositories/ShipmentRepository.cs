@@ -1,4 +1,6 @@
 using LogisticsAPI.Models;
+using LogisticsAPI.DTOs;
+using LogisticsAPI.Repositories;
 
 namespace LogisticsAPI.Repositories;
 public class ShipmentRepository : IShipmentRepository

@@ -1,3 +1,10 @@
+
+using LogisticsAPI.Models;
+using LogisticsAPI.DTOs;
+using LogisticsAPI.Repositories;
+
+namespace LogisticsAPI.Services;
+
 public class ShipmentService
 {
     private readonly IShipmentRepository _repo;
@@ -17,8 +24,10 @@ public class ShipmentService
         {
             Origin = dto.Origin,
             Destination = dto.Destination,
-            ExpectedDeliveryDate = dto.ExpectedDeliveryDate,
-            Status = "Pending"
+            Status = "Created",
+            Carrier = "Default Carrier",
+    TrackingNumber = Guid.NewGuid().ToString(),
+    ExpectedDeliveryDate = DateTime.Now.AddDays(5)
         };
 
         return _repo.Add(shipment);

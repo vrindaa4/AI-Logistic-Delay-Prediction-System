@@ -2,6 +2,6 @@ namespace LogisticsAPI.DTOs
 {
     public class UpdateShipmentStatusDto
     {
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }

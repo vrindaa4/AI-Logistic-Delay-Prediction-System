@@ -4,15 +4,14 @@ public class Shipment
 {
     public int Id { get; set; }
 
-    public required string Origin { get; set; }
-    public required string Destination { get; set; }
-    public required string Carrier { get; set; }
-    public required string TrackingNumber { get; set; }
+    public string Origin { get; set; } = string.Empty;
+    public string Destination { get; set; } = string.Empty;
 
-    public DateTime EstimatedDeliveryDateUtc { get; set; }
+    public string Status { get; set; } = "Pending";
 
-    public required string Status { get; set; }
+    public string Carrier { get; set; } = string.Empty;
 
-    public DateTime CreatedAtUtc { get; set; }
-    public DateTime? DeliveredAtUtc { get; set; }
+    public string TrackingNumber { get; set; } = string.Empty;
+
+    public DateTime? ExpectedDeliveryDate { get; set; }
 }
