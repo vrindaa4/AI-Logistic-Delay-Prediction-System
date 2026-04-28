@@ -13,5 +13,8 @@ public class Shipment
 
     public string TrackingNumber { get; set; } = string.Empty;
 
-    public DateTime? ExpectedDeliveryDate { get; set; }
+    public DateTime? EstimatedDeliveryDateUtc { get; set; }
+
+    public DateTime CreatedAtUtc { get; set; }
+    public DateTime? DeliveredAtUtc { get; set; }
 }

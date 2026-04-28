@@ -1,4 +1,3 @@
-
 using LogisticsAPI.Models;
 using LogisticsAPI.DTOs;
 using LogisticsAPI.Repositories;
@@ -26,10 +25,11 @@ public Shipment? GetById(int id)
         {
             Origin = dto.Origin,
             Destination = dto.Destination,
-            Status = "Created",
-            Carrier = "Default Carrier",
-    TrackingNumber = Guid.NewGuid().ToString(),
-    ExpectedDeliveryDate = DateTime.Now.AddDays(5)
+            Status = string.IsNullOrWhiteSpace(dto.Status) ? "Created" : dto.Status,
+            Carrier = string.IsNullOrWhiteSpace(dto.Carrier) ? "Default Carrier" : dto.Carrier,
+            TrackingNumber = string.IsNullOrWhiteSpace(dto.TrackingNumber) ? Guid.NewGuid().ToString() : dto.TrackingNumber,
+            EstimatedDeliveryDateUtc = dto.EstimatedDeliveryDateUtc ?? DateTime.UtcNow.AddDays(5),
+            CreatedAtUtc = DateTime.UtcNow
         };
 
         return _repo.Add(shipment);

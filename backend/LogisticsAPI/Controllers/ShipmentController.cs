@@ -32,6 +32,8 @@ public class ShipmentController : ControllerBase
 
     [HttpPost]
     public IActionResult Create(CreateShipmentDto dto){
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
         var shipment = _service.Create(dto);
 
         var prediction = _predictionService.PredictDelay();
