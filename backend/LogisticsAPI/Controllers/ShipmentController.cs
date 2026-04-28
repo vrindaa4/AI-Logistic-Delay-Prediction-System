@@ -32,24 +32,26 @@ public class ShipmentController : ControllerBase
 
     [HttpPost]
     public IActionResult Create(CreateShipmentDto dto){
-    var shipment = new Shipment
-    {
-        Origin = dto.Origin,
-        Destination = dto.Destination,
-        Status = "Created",
-        Carrier = "Default Carrier",
-        TrackingNumber = Guid.NewGuid().ToString(),
-        ExpectedDeliveryDate = DateTime.Now.AddDays(3)
-    };
+        var shipment = _service.Create(dto);
 
-    var prediction = _predictionService.PredictDelay();
+        var prediction = _predictionService.PredictDelay();
 
-    return Ok(new
+        return CreatedAtAction(nameof(GetById), new { id = shipment.Id }, new
+        {
+            shipment,
+            prediction
+        });
+    }
+
+    [HttpPut("{id}/status")]
+    public IActionResult UpdateStatus(int id, UpdateShipmentStatusDto dto)
     {
-        shipment,
-        prediction
-    });
-}
+        var existing = _service.GetById(id);
+        if (existing == null) return NotFound();
+
+        _service.UpdateStatus(id, dto.Status);
+        return NoContent();
+    }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)

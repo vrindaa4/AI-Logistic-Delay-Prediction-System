@@ -16,8 +16,10 @@ public class ShipmentService
 
     public List<Shipment> GetAll() => _repo.GetAll();
 
-    public Shipment GetById(int id) => _repo.GetById(id);
-
+public Shipment? GetById(int id)
+{
+    return _repo.GetById(id);
+}
     public Shipment Create(CreateShipmentDto dto)
     {
         var shipment = new Shipment

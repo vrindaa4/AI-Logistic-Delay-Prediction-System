@@ -13,8 +13,18 @@ builder.Services.AddSingleton<IShipmentRepository, ShipmentRepository>();
 builder.Services.AddScoped<ShipmentService>();
 builder.Services.AddScoped<PredictionService>();
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 var app = builder.Build();
+
 
 // Middleware
 if (app.Environment.IsDevelopment())
@@ -23,6 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
