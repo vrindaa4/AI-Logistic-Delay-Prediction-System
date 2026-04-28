@@ -1,30 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
 using LogisticsAPI.Models;
 using LogisticsAPI.Services;
-
-namespace LogisticsAPI.Controllers
+using LogisticsAPI.DTOs;
+namespace LogisticsAPI.Controllers;
+[ApiController]
+[Route("api/[controller]")]
+public class ShipmentController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ShipmentController : ControllerBase
+    private readonly ShipmentService _service;
+    private readonly PredictionService _predictionService;
+
+    public ShipmentController(ShipmentService service, PredictionService predictionService)
     {
-        private readonly ShipmentService _service;
+        _service = service;
+        _predictionService = predictionService;
+    }
 
-        public ShipmentController(ShipmentService service)
-        {
-            _service = service;
-        }
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        return Ok(_service.GetAll());
+    }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok(_service.GetShipments());
-        }
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var shipment = _service.GetById(id);
+        if (shipment == null) return NotFound();
+        return Ok(shipment);
+    }
 
-        [HttpPost]
-        public IActionResult Create(Shipment shipment)
-        {
-            return Ok(_service.CreateShipment(shipment));
-        }
+    [HttpPost]
+    public IActionResult Create(CreateShipmentDto dto){
+    var shipment = new Shipment
+    {
+        Origin = dto.Origin,
+        Destination = dto.Destination,
+        Status = "Created",
+        Carrier = "Default Carrier",
+        TrackingNumber = Guid.NewGuid().ToString(),
+        ExpectedDeliveryDate = DateTime.Now.AddDays(3)
+    };
+
+    var prediction = _predictionService.PredictDelay();
+
+    return Ok(new
+    {
+        shipment,
+        prediction
+    });
+}
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        _service.Delete(id);
+        return Ok();
     }
 }
