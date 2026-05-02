@@ -1,15 +1,20 @@
 using LogisticsAPI.Repositories;
 using LogisticsAPI.Services;
+using LogisticsAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Dependency Injection
-builder.Services.AddSingleton<IShipmentRepository, ShipmentRepository>();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<LogisticsDbContext>(options =>
+    options.UseSqlite(connectionString));
+
+
+builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
 builder.Services.AddScoped<ShipmentService>();
 builder.Services.AddScoped<PredictionService>();
 
@@ -25,8 +30,12 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<LogisticsDbContext>();
+    dbContext.Database.EnsureCreated();
+}
 
-// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
