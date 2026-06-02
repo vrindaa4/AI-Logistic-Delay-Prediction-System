@@ -4,7 +4,7 @@ AI-powered logistics system to predict shipment delays and optimize delivery ope
 ## Tech Stack
 - Backend: ASP.NET Core Web API
 - Frontend: Angular
-- Database: SQL Server / SQLite
+- Database: SQLite
 - AI/ML: External APIs / Python model integration
 
 ## Features

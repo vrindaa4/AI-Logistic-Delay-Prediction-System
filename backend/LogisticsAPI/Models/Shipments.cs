@@ -4,6 +4,8 @@ public class Shipment
 {
     public int Id { get; set; }
 
+    public string ShipmentNumber { get; set; } = string.Empty;
+
     public string Origin { get; set; } = string.Empty;
     public string Destination { get; set; } = string.Empty;
 
@@ -12,6 +14,8 @@ public class Shipment
     public string Carrier { get; set; } = string.Empty;
 
     public string TrackingNumber { get; set; } = string.Empty;
+
+    public double Weight { get; set; }
 
     public DateTime? EstimatedDeliveryDateUtc { get; set; }
 

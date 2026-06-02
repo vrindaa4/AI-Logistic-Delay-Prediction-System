@@ -1,0 +1,18 @@
+<header class="navbar">
+  <div class="navbar-container">
+    <h1 class="navbar-title">{{ title }}</h1>
+    <nav class="nav-links">
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/shipments" routerLinkActive="active">Shipments</a>
+      <a routerLink="/predict" routerLinkActive="active">Predict Delay</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <p>AI Logistics Delay Prediction System</p>
+</footer>

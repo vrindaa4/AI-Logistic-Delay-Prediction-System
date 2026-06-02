@@ -1,0 +1,62 @@
+<div class="dashboard-container">
+  <h1>Dashboard</h1>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <div *ngIf="!loading" class="content">
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <h3>Total Shipments</h3>
+        <p class="metric-value">{{ totalShipments }}</p>
+      </div>
+
+      <div class="metric-card">
+        <h3>In Transit</h3>
+        <p class="metric-value">{{ inTransitShipments }}</p>
+      </div>
+
+      <div class="metric-card">
+        <h3>Delivered</h3>
+        <p class="metric-value">{{ deliveredShipments }}</p>
+      </div>
+
+      <div class="metric-card metric-card-alert">
+        <h3>Delayed</h3>
+        <p class="metric-value">{{ delayedShipments }}</p>
+      </div>
+    </div>
+
+   
+    <div class="recent-shipments">
+      <h2>Recent Shipments</h2>
+
+      <div *ngIf="shipments.length === 0" class="no-data">
+        <p>No shipments found</p>
+      </div>
+
+      <table *ngIf="shipments.length > 0" class="shipments-table">
+        <thead>
+          <tr>
+            <th>Shipment Number</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Est. Delivery</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let shipment of shipments | slice:0:5">
+            <td>{{ shipment.shipmentNumber }}</td>
+            <td>{{ shipment.origin }}</td>
+            <td>{{ shipment.destination }}</td>
+            <td><span [class]="'badge ' + getStatusClass(shipment.status)">{{ shipment.status }}</span></td>
+            <td>{{ shipment.estimatedDeliveryDateUtc | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

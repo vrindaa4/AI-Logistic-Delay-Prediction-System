@@ -1,0 +1,156 @@
+.dashboard-container {
+  h1 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-color);
+  }
+
+  .content {
+    animation: fadeIn 0.3s ease-in;
+  }
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  h3 {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .metric-value {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    font-weight: bold;
+    margin: 0;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &.metric-card-alert .metric-value {
+    color: var(--accent-color);
+  }
+}
+
+.recent-shipments {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+  }
+}
+
+.shipments-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead tr {
+    background-color: var(--background-color);
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:hover {
+    background-color: var(--background-color);
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.badge-pending {
+    background-color: #f39c12;
+    color: white;
+  }
+
+  &.badge-in-transit {
+    background-color: var(--secondary-color);
+    color: white;
+  }
+
+  &.badge-delivered {
+    background-color: #27ae60;
+    color: white;
+  }
+
+  &.badge-delayed {
+    background-color: var(--accent-color);
+    color: white;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .shipments-table {
+    font-size: 0.9rem;
+
+    th,
+    td {
+      padding: 0.75rem;
+    }
+  }
+}
