@@ -40,11 +40,26 @@
       <table *ngIf="shipments.length > 0" class="shipments-table">
         <thead>
           <tr>
-            <th>Shipment Number</th>
-            <th>Origin</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Est. Delivery</th>
+            <th (click)="onSortColumnClick('shipmentNumber')" class="sortable-header" 
+                [class.active-sort]="sortColumn === 'shipmentNumber'">
+              Shipment Number{{ getSortIndicator('shipmentNumber') }}
+            </th>
+            <th (click)="onSortColumnClick('origin')" class="sortable-header"
+                [class.active-sort]="sortColumn === 'origin'">
+              Origin{{ getSortIndicator('origin') }}
+            </th>
+            <th (click)="onSortColumnClick('destination')" class="sortable-header"
+                [class.active-sort]="sortColumn === 'destination'">
+              Destination{{ getSortIndicator('destination') }}
+            </th>
+            <th (click)="onSortColumnClick('status')" class="sortable-header"
+                [class.active-sort]="sortColumn === 'status'">
+              Status{{ getSortIndicator('status') }}
+            </th>
+            <th (click)="onSortColumnClick('estimatedDelivery')" class="sortable-header"
+                [class.active-sort]="sortColumn === 'estimatedDelivery'">
+              Est. Delivery{{ getSortIndicator('estimatedDelivery') }}
+            </th>
           </tr>
         </thead>
         <tbody>

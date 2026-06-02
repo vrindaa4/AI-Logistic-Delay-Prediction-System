@@ -17,6 +17,10 @@ export class DashboardComponent implements OnInit {
   inTransitShipments = 0;
   deliveredShipments = 0;
   loading = true;
+  
+  // Sorting properties
+  sortColumn: string = 'shipmentNumber';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private logisticsService: LogisticsService) {}
 
@@ -30,6 +34,7 @@ export class DashboardComponent implements OnInit {
       next: (data: Shipment[]) => {
         this.shipments = data;
         this.calculateMetrics();
+        this.sortShipments();
         this.loading = false;
       },
       error: (error: any) => {
@@ -46,7 +51,70 @@ export class DashboardComponent implements OnInit {
     this.deliveredShipments = this.shipments.filter(s => s.status === 'delivered').length;
   }
 
+  sortShipments(): void {
+    this.shipments.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      // Get values based on sort column
+      switch (this.sortColumn) {
+        case 'shipmentNumber':
+          aValue = a.shipmentNumber;
+          bValue = b.shipmentNumber;
+          break;
+        case 'origin':
+          aValue = a.origin;
+          bValue = b.origin;
+          break;
+        case 'destination':
+          aValue = a.destination;
+          bValue = b.destination;
+          break;
+        case 'status':
+          aValue = a.status;
+          bValue = b.status;
+          break;
+        case 'estimatedDelivery':
+          aValue = new Date(a.estimatedDeliveryDateUtc).getTime();
+          bValue = new Date(b.estimatedDeliveryDateUtc).getTime();
+          break;
+        default:
+          return 0;
+      }
+
+      // Compare values
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+        return this.sortDirection === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        return this.sortDirection === 'asc' 
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+    });
+  }
+
+  onSortColumnClick(column: string): void {
+    if (this.sortColumn === column) {
+      // Toggle sort direction if clicking same column
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Change to new column, default to ascending
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.sortShipments();
+  }
+
+  getSortIndicator(column: string): string {
+    if (this.sortColumn !== column) return '';
+    return this.sortDirection === 'asc' ? ' ▲' : ' ▼';
+  }
+
   getStatusClass(status: string): string {
-    return `badge-${status}`;    
+    return `badge-${status}`;
   }
 }
