@@ -1,0 +1,153 @@
+.shipment-list-container {
+  h1 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-color);
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 8px;
+    color: #999;
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.search-input,
+.status-filter {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.status-filter {
+  width: 180px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.shipments-table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  thead tr {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  th {
+    padding: 1.25rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+
+  td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:hover {
+    background-color: var(--background-color);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.badge-pending {
+    background-color: #f39c12;
+    color: white;
+  }
+
+  &.badge-in-transit {
+    background-color: var(--secondary-color);
+    color: white;
+  }
+
+  &.badge-delivered {
+    background-color: #27ae60;
+    color: white;
+  }
+
+  &.badge-delayed {
+    background-color: var(--accent-color);
+    color: white;
+  }
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &.btn-danger {
+    background-color: var(--accent-color);
+    color: white;
+
+    &:hover {
+      background-color: darken(#e74c3c, 10%);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .shipments-table {
+    font-size: 0.9rem;
+
+    th,
+    td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+}

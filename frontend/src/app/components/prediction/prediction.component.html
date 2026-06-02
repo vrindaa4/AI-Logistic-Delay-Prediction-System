@@ -1,0 +1,108 @@
+<div class="prediction-container">
+  <h1>Delay Prediction</h1>
+  <p class="subtitle">Use AI to predict possible delays in your shipments</p>
+
+  <div class="main-content">
+    <!-- Form Section -->
+    <div class="form-section">
+      <h2>Enter Shipment Details</h2>
+
+      <form (ngSubmit)="onSubmit()" class="prediction-form">
+        <div *ngIf="errorMessage" class="alert alert-error">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label for="origin">Origin</label>
+          <input
+            id="origin"
+            type="text"
+            [(ngModel)]="predictionForm.origin"
+            name="origin"
+            placeholder="e.g., New York"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="destination">Destination</label>
+          <input
+            id="destination"
+            type="text"
+            [(ngModel)]="predictionForm.destination"
+            name="destination"
+            placeholder="e.g., Los Angeles"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="carrier">Carrier</label>
+          <input
+            id="carrier"
+            type="text"
+            [(ngModel)]="predictionForm.carrier"
+            name="carrier"
+            placeholder="e.g., FedEx"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="weight">Weight (kg)</label>
+          <input
+            id="weight"
+            type="number"
+            [(ngModel)]="predictionForm.weight"
+            name="weight"
+            placeholder="0"
+            class="form-control"
+            step="0.1"
+            min="0"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            {{ loading ? 'Predicting...' : 'Predict Delay' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="reset()">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Result Section -->
+    <div *ngIf="result" class="result-section">
+      <h2>Prediction Result</h2>
+
+      <div class="result-card" [class]="getRiskLevelClass(result.riskLevel)">
+        <div class="result-header">
+          <h3>Risk Level: <span class="risk-badge">{{ result.riskLevel | uppercase }}</span></h3>
+        </div>
+
+        <div class="result-details">
+          <div class="result-item">
+            <span class="label">Delay Probability:</span>
+            <span class="value">{{ (result.probability * 100).toFixed(2) }}%</span>
+          </div>
+
+          <div class="result-item">
+            <span class="label">Estimated Delay:</span>
+            <span class="value">{{ result.estimatedDelayDays.toFixed(1) }} days</span>
+          </div>
+
+          <div class="result-item full-width">
+            <span class="label">Recommendation:</span>
+            <p class="recommendation">{{ result.recommendation }}</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary" (click)="reset()" style="margin-top: 1rem;">
+        Make Another Prediction
+      </button>
+    </div>
+  </div>
+</div>
