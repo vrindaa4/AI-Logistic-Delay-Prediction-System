@@ -42,7 +42,7 @@ public class TrafficService : ITrafficService
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadAsAsync<GoogleDistanceMatrixResponse>();
+            var result = await response.Content.ReadFromJsonAsync<GoogleDistanceMatrixResponse>();
 
             if (result?.rows?.FirstOrDefault()?.elements?.FirstOrDefault() != null)
             {
