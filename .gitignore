@@ -19,4 +19,4 @@ obj/
 # Build cache and artifacts
 *.cache
 .vscode/
-*.log
+*.log.angular
