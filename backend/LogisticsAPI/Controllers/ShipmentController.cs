@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using LogisticsAPI.Models;
 using LogisticsAPI.Services;
 using LogisticsAPI.DTOs;
 namespace LogisticsAPI.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ShipmentController : ControllerBase
 {
     private readonly ShipmentService _service;
