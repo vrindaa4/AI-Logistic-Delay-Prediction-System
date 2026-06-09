@@ -1,14 +1,20 @@
+using System.ComponentModel.DataAnnotations;
 namespace LogisticsAPI.DTOs;
 
 public class ShipmentResponseDto
 {
     public int Id { get; set; }
-    public required string Origin { get; set; }
-    public required string Destination { get; set; }
-    public required string Carrier { get; set; }
-    public required string TrackingNumber { get; set; }
+    [Required]
+    public string? Origin { get; set; }
+    [Required]
+    public string? Destination { get; set; }
+    [Required]
+    public string? Carrier { get; set; }
+    [Required]
+    public string? TrackingNumber { get; set; }
     public DateTime EstimatedDeliveryDateUtc { get; set; }
-    public required string Status { get; set; }
+    [Required]
+    public string? Status { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public DateTime? DeliveredAtUtc { get; set; }
 }
