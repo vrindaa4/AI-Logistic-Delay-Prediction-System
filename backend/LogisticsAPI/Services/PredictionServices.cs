@@ -1,9 +1,16 @@
+using LogisticsAPI.DTOs;
+
 namespace LogisticsAPI.Services;
 
 public class PredictionService
 {
-    public string PredictDelay()
+    private readonly IAiPredictionService _ai;
+
+    public PredictionService(IAiPredictionService ai)
     {
-        return "No Delay"; 
+        _ai = ai;
     }
+
+    public Task<PredictionResponseDto> PredictDelayAsync(PredictionRequestDto request)
+        => _ai.PredictAsync(request);
 }

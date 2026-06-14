@@ -16,4 +16,5 @@ public class CreateShipmentDto
     public string? Status { get; set; }
 
     public DateTime? EstimatedDeliveryDateUtc { get; set; }
+   
 }

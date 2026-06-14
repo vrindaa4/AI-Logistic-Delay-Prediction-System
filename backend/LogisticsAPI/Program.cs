@@ -12,6 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<JwtService>();
+// builder.Services.AddHttpClient<ITrafficService, TrafficService>(client =>
+// {
+//     client.DefaultRequestHeaders.Add("User-Agent", "LogisticsDelayPrediction/1.0 ");
+// });
+builder.Services.AddHttpClient<IAiPredictionService, AiPredictionService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));

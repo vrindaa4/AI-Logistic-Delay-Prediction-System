@@ -34,18 +34,34 @@ public class ShipmentController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(CreateShipmentDto dto){
+    public async Task<IActionResult> Create(CreateShipmentDto dto)
+    {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var shipment = _service.Create(dto);
 
-        var prediction = _predictionService.PredictDelay();
+        var prediction = await _predictionService.PredictDelayAsync(new PredictionRequestDto
+        {
+            Origin = dto.Origin,
+            Destination = dto.Destination,
+            Carrier = dto.Carrier ?? "Default Carrier"
+        });
 
         return CreatedAtAction(nameof(GetById), new { id = shipment.Id }, new
         {
             shipment,
             prediction
         });
+    }
+
+    [HttpPost("predict")]
+    public async Task<IActionResult> Predict([FromBody] PredictionRequestDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Origin) || string.IsNullOrWhiteSpace(dto.Destination))
+            return BadRequest(new { message = "Origin and destination are required." });
+
+        var result = await _predictionService.PredictDelayAsync(dto);
+        return Ok(result);
     }
 
     [HttpPut("{id}/status")]
