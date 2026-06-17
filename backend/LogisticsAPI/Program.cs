@@ -5,17 +5,33 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
+using Microsoft.OpenApi;
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.ReferenceHandler = 
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token"
+    });
+
+    c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 builder.Services.AddScoped<JwtService>();
-// builder.Services.AddHttpClient<ITrafficService, TrafficService>(client =>
-// {
-//     client.DefaultRequestHeaders.Add("User-Agent", "LogisticsDelayPrediction/1.0 ");
-// });
+
 builder.Services.AddHttpClient<IAiPredictionService, AiPredictionService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -43,6 +59,7 @@ builder.Services.AddAuthentication(
     JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
+     options.MapInboundClaims = true;
     options.TokenValidationParameters =
         new TokenValidationParameters
         {
@@ -53,12 +70,30 @@ builder.Services.AddAuthentication(
 
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-
+            
             IssuerSigningKey =
                 new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(
                         builder.Configuration["Jwt:Key"]!))
         };
+        options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = ctx =>
+        {
+            Console.WriteLine($"❌ JWT REJECTED: {ctx.Exception.GetType().Name}: {ctx.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = ctx =>
+        {
+            Console.WriteLine("✅ JWT validated OK");
+            return Task.CompletedTask;
+        },
+        OnChallenge = ctx =>
+        {
+            Console.WriteLine($"⚠️ Challenge issued. Error: {ctx.Error}, Desc: {ctx.ErrorDescription}");
+            return Task.CompletedTask;
+        }
+    };
 });
 builder.Services.AddAuthorization();
 var app = builder.Build();
@@ -67,6 +102,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<LogisticsDbContext>();
     dbContext.Database.Migrate();
+    // DbSeeder.Seed(dbContext);
 }
 
 if (app.Environment.IsDevelopment())

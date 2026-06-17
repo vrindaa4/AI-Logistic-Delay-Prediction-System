@@ -1,3 +1,4 @@
+
 namespace LogisticsAPI.Models;
 
 public class User
@@ -11,4 +12,5 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
 
     public string Role { get; set; } = "User";
+    public List<Shipment> Shipments { get; set; } = new();
 }

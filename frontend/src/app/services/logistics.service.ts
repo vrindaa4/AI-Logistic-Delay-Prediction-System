@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Shipment, PredictionRequest, PredictionResponse } from '../models/logistics.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,17 +11,25 @@ import { Shipment, PredictionRequest, PredictionResponse } from '../models/logis
 export class LogisticsService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    private authService: AuthService) {}
 
  
-  getShipments(): Observable<Shipment[]> {
-    console.log('Fetching shipments from:', `${this.apiUrl}/shipment`);
-    return this.http.get<Shipment[]>(`${this.apiUrl}/shipment`);
+ getShipments(): Observable<Shipment[]> {
+    // Admin gets all, User gets only their own
+    const url = this.authService.isAdmin()
+      ? `${this.apiUrl}/shipment`
+      : `${this.apiUrl}/shipment/my`;
+
+    return this.http.get<Shipment[]>(url);
   }
 
-  
   getShipment(id: number): Observable<Shipment> {
-    return this.http.get<Shipment>(`${this.apiUrl}/shipment/${id}`);
+    const url = this.authService.isAdmin()
+      ? `${this.apiUrl}/shipment/${id}`
+      : `${this.apiUrl}/shipment/my/${id}`;
+
+    return this.http.get<Shipment>(url);
   }
 
 
@@ -29,9 +38,9 @@ export class LogisticsService {
   }
 
   
-  updateShipment(id: number, shipment: Partial<Shipment>): Observable<Shipment> {
-    return this.http.put<Shipment>(`${this.apiUrl}/shipment/${id}`, shipment);
-  }
+updateShipmentStatus(id: number, status: string): Observable<void> {
+  return this.http.put<void>(`${this.apiUrl}/shipment/${id}/status`, { status });
+}
 
 
   deleteShipment(id: number): Observable<void> {

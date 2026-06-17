@@ -64,6 +64,20 @@ app-root {
     &:hover {
       color: var(--secondary-color);
     }
+    .logout-btn {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #c0392b;
+  }
+}
 
     &.active {
       color: var(--secondary-color);

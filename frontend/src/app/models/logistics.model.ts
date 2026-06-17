@@ -18,10 +18,21 @@ export interface PredictionRequest {
   weight: number;
   carrier: string;
 }
-
 export interface PredictionResponse {
-  probability: number;
+  delayProbability: number;
   estimatedDelayDays: number;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'low' | 'medium' | 'high';
   recommendation: string;
+  aiExplanation: string;
+  predictionSource: string;
+  trafficData?: {
+    durationInTraffic: number;
+    distance: number;
+    trafficCondition: string;
+    estimatedDelayMinutes: number;
+    weatherCondition?: string;
+    weatherRiskScore?: number;
+    dataSource: string;
+  };
+  factors?: Record<string, string>;
 }

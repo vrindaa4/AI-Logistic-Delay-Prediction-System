@@ -1,4 +1,4 @@
-.login-wrapper {
+.register-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,7 +7,7 @@
   padding: 1rem;
 }
 
-.login-card {
+.register-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -16,7 +16,7 @@
   max-width: 380px;
 }
 
-.login-header {
+.register-header {
   text-align: center;
   margin-bottom: 1.5rem;
 
@@ -38,51 +38,6 @@
   }
 }
 
-.role-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1rem;
-}
-
-.role-tab {
-  flex: 1;
-  padding: 0.6rem 0;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: #f9fafb;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:nth-child(1).active {
-    background: #e6f1fb;
-    border-color: #378add;
-    color: #0c447c;
-    font-weight: 600;
-  }
-
-  &:nth-child(2).active {
-    background: #fcebeb;
-    border-color: #e24b4a;
-    color: #791f1f;
-    font-weight: 600;
-  }
-}
-
-.role-description {
-  font-size: 0.85rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: 8px;
-  background: #e6f1fb;
-  color: #0c447c;
-  margin-bottom: 1.25rem;
-
-  &.admin-desc {
-    background: #fcebeb;
-    color: #791f1f;
-  }
-}
-
 .form-group {
   margin-bottom: 1rem;
 
@@ -100,14 +55,12 @@
     border-radius: 8px;
     font-size: 0.95rem;
     box-sizing: border-box;
+    font-family: inherit;
 
     &:focus {
       outline: none;
       border-color: #378add;
-    }
-
-    &.admin-input:focus {
-      border-color: #e24b4a;
+      box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.1);
     }
   }
 }
@@ -121,7 +74,16 @@
   margin-bottom: 1rem;
 }
 
-.login-btn {
+.success-msg {
+  background: #e6f9ee;
+  color: #1a6b3c;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.register-btn {
   width: 100%;
   padding: 0.7rem 0;
   border: none;
@@ -132,6 +94,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease;
+  font-family: inherit;
 
   &:hover:not(:disabled) {
     background: #185fa5;
@@ -141,17 +104,9 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
-
-  &.admin-btn {
-    background: #e24b4a;
-
-    &:hover:not(:disabled) {
-      background: #a32d2d;
-    }
-  }
 }
 
-.register-link {
+.login-link {
   text-align: center;
   font-size: 0.85rem;
   color: #6b7280;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using LogisticsAPI.Models;
 using LogisticsAPI.Services;
 using LogisticsAPI.DTOs;
+using System.Security.Claims;
 namespace LogisticsAPI.Controllers;
 
 [ApiController]
@@ -19,12 +20,34 @@ public class ShipmentController : ControllerBase
         _predictionService = predictionService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public IActionResult GetAll()
     {
         return Ok(_service.GetAll());
     }
 
+    [HttpGet("my")]
+    public IActionResult GetMine()
+    {
+        if (!TryGetUserId(out int userId))
+            return Unauthorized();
+
+        return Ok(_service.GetByUserId(userId));
+    }
+
+    [HttpGet("my/{id}")]
+    public IActionResult GetMineById(int id)
+    {
+        if (!TryGetUserId(out int userId))
+            return Unauthorized();
+
+        var shipment = _service.GetByIdForUser(id, userId);
+        if (shipment == null) return NotFound();
+        return Ok(shipment);
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
@@ -33,12 +56,24 @@ public class ShipmentController : ControllerBase
         return Ok(shipment);
     }
 
+    private bool TryGetUserId(out int userId)
+    {
+        var rawId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                 ?? User.FindFirstValue("sub")
+                 ?? User.FindFirstValue("nameid");
+
+        return int.TryParse(rawId, out userId);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreateShipmentDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var shipment = _service.Create(dto);
+        if (!TryGetUserId(out int userId))
+            return Unauthorized();
+
+        var shipment = _service.Create(dto, userId);
 
         var prediction = await _predictionService.PredictDelayAsync(new PredictionRequestDto
         {
@@ -47,13 +82,14 @@ public class ShipmentController : ControllerBase
             Carrier = dto.Carrier ?? "Default Carrier"
         });
 
-        return CreatedAtAction(nameof(GetById), new { id = shipment.Id }, new
+        return CreatedAtAction(nameof(GetMineById), new { id = shipment.Id }, new
         {
             shipment,
             prediction
         });
     }
 
+    [AllowAnonymous]
     [HttpPost("predict")]
     public async Task<IActionResult> Predict([FromBody] PredictionRequestDto dto)
     {
@@ -70,6 +106,12 @@ public class ShipmentController : ControllerBase
         var existing = _service.GetById(id);
         if (existing == null) return NotFound();
 
+        if (!User.IsInRole("Admin"))
+        {
+            if (!TryGetUserId(out int userId) || existing.UserId != userId)
+                return Forbid();
+        }
+
         _service.UpdateStatus(id, dto.Status);
         return NoContent();
     }
@@ -77,6 +119,15 @@ public class ShipmentController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        var existing = _service.GetById(id);
+        if (existing == null) return NotFound();
+
+        if (!User.IsInRole("Admin"))
+        {
+            if (!TryGetUserId(out int userId) || existing.UserId != userId)
+                return Forbid();
+        }
+
         _service.Delete(id);
         return Ok();
     }

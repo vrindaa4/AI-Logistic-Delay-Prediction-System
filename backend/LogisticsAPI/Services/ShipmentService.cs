@@ -13,27 +13,42 @@ public class ShipmentService
         _repo = repo;
     }
 
+    // Admin: all shipments
     public List<Shipment> GetAll() => _repo.GetAll();
 
-public Shipment? GetById(int id)
-{
-    return _repo.GetById(id);
-}
-    public Shipment Create(CreateShipmentDto dto)
+    // Admin: any shipment by id
+    public Shipment? GetById(int id) => _repo.GetById(id);
+
+
+    // User: only their own shipments
+    public List<Shipment> GetByUserId(int userId) => _repo.GetByUserId(userId);
+    public Shipment? GetByIdForUser(int id, int userId) => _repo.GetByIdForUser(id, userId);
+
+
+    public Shipment Create(CreateShipmentDto dto, int userId)
     {
         var shipment = new Shipment
         {
+            UserId = userId,
             Origin = dto.Origin,
             Destination = dto.Destination,
-            Status = string.IsNullOrWhiteSpace(dto.Status) ? "Created" : dto.Status,
+            Status = "in-transit",
             Carrier = string.IsNullOrWhiteSpace(dto.Carrier) ? "Default Carrier" : dto.Carrier,
-            TrackingNumber = string.IsNullOrWhiteSpace(dto.TrackingNumber) ? Guid.NewGuid().ToString() : dto.TrackingNumber,
+            TrackingNumber = string.IsNullOrWhiteSpace(dto.TrackingNumber)
+                ? Guid.NewGuid().ToString()
+                : dto.TrackingNumber,
             EstimatedDeliveryDateUtc = dto.EstimatedDeliveryDateUtc ?? DateTime.UtcNow.AddDays(5),
             CreatedAtUtc = DateTime.UtcNow
         };
 
-        return _repo.Add(shipment);
-    }
+    // Save first to get the DB-assigned Id
+        var saved = _repo.Add(shipment);
+
+        // Auto-generate shipment number from Id
+        saved.ShipmentNumber = $"SHIP-{saved.Id:D3}";
+        _repo.Update(saved);
+
+        return saved;    }
 
     public void UpdateStatus(int id, string status)
     {

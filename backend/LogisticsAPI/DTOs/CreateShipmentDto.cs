@@ -13,8 +13,6 @@ public class CreateShipmentDto
 
     public string? Carrier { get; set; }
     public string? TrackingNumber { get; set; }
-    public string? Status { get; set; }
-
     public DateTime? EstimatedDeliveryDateUtc { get; set; }
    
 }

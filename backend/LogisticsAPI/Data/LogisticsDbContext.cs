@@ -20,10 +20,15 @@ public class LogisticsDbContext : DbContext
         modelBuilder.Entity<Shipment>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.HasOne(s => s.User)
+            .WithMany(u => u.Shipments)
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(e => e.ShipmentNumber)
                 .IsRequired()
                 .HasMaxLength(100);
+
 
             entity.Property(e => e.Origin)
                 .IsRequired()

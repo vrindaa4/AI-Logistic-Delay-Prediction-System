@@ -1,22 +1,73 @@
-<h2>Login</h2>
+<div class="login-wrapper">
+  <div class="login-card">
 
-<input
-  type="email"
-  placeholder="Email"
-  [(ngModel)]="email">
+    <div class="login-header">
+      <div class="logo-icon">🚚</div>
+      <h1>Logistics System</h1>
+      <p class="subtitle">Sign in to your account</p>
+    </div>
 
-<br><br>
+    <div class="role-tabs">
+      <button
+        class="role-tab"
+        [class.active]="selectedRole === 'User'"
+        (click)="selectRole('User')">
+        👤 User
+      </button>
+      <button
+        class="role-tab"
+        [class.active]="selectedRole === 'Admin'"
+        (click)="selectRole('Admin')">
+        🛡️ Admin
+      </button>
+    </div>
 
-<input
-  type="password"
-  placeholder="Password"
-  [(ngModel)]="password">
+    <div class="role-description" [class.admin-desc]="selectedRole === 'Admin'">
+      @if (selectedRole === 'User') {
+        <span> User access: create and track your own shipments</span>
+      } @else {
+        <span> Admin access: manage all shipments, users and system settings</span>
+      }
+    </div>
 
-<br><br>
-<p>
-  Don't have an account?
-  <a routerLink="/register">Sign up</a>
-</p>
-<button (click)="login()">
-  Login
-</button>
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Enter your email"
+        [(ngModel)]="email"
+        [class.admin-input]="selectedRole === 'Admin'">
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        type="password"
+        placeholder="Enter your password"
+        [(ngModel)]="password"
+        [class.admin-input]="selectedRole === 'Admin'">
+    </div>
+
+    @if (errorMessage) {
+      <div class="error-msg"> {{ errorMessage }}</div>
+    }
+
+    <button
+      class="login-btn"
+      [class.admin-btn]="selectedRole === 'Admin'"
+      (click)="login()"
+      [disabled]="loading">
+      @if (!loading) {
+        <span>{{ selectedRole === 'Admin' ? '🛡️ Login as Admin' : '👤 Login as User' }}</span>
+      } @else {
+        <span>Signing in...</span>
+      }
+    </button>
+
+    <p class="register-link">
+      Don't have an account?
+      <a routerLink="/register">Sign up</a>
+    </p>
+
+  </div>
+</div>

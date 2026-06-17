@@ -15,12 +15,23 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
 
+  selectedRole: 'User' | 'Admin' = 'User';
+  errorMessage: string = '';
+  loading: boolean = false;
+
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
+  selectRole(role: 'User' | 'Admin'): void {
+    this.selectedRole = role;
+    this.errorMessage = '';
+  }
+
   login(): void {
+    this.errorMessage = '';
+    this.loading = true;
 
     const data = {
       email: this.email,
@@ -30,15 +41,22 @@ export class LoginComponent {
     this.authService.login(data)
       .subscribe({
         next: (response: any) => {
+          this.loading = false;
 
           this.authService.saveToken(response.token);
+          this.authService.saveRole(response.role);
 
-          this.router.navigate(['/dashboard']);
+          if (response.role === 'Admin') {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate(['/shipments']);
+          }
         },
 
         error: (err) => {
+          this.loading = false;
           console.error(err);
-          alert('Invalid credentials');
+          this.errorMessage = 'Invalid email or password.';
         }
       });
   }

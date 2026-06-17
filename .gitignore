@@ -20,3 +20,6 @@ obj/
 *.cache
 .vscode/
 *.log.angular
+
+appsettings.json
+appsettings.Development.json

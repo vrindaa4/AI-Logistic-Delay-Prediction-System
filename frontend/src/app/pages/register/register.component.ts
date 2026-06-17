@@ -14,6 +14,9 @@ export class RegisterComponent {
   name = '';
   email = '';
   password = '';
+  loading = false;
+  errorMessage = '';
+  successMessage = '';
 
   constructor(
     private authService: AuthService,
@@ -21,6 +24,16 @@ export class RegisterComponent {
   ) {}
 
   register(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (!this.name.trim() || !this.email.trim() || !this.password.trim()) {
+      this.errorMessage = 'All fields are required.';
+      return;
+    }
+
+    this.loading = true;
+
     const data = {
       name: this.name,
       email: this.email,
@@ -29,12 +42,13 @@ export class RegisterComponent {
 
     this.authService.register(data).subscribe({
       next: () => {
-        alert('Account created. Please log in.');
-        this.router.navigate(['/login']);
+        this.successMessage = 'Account created! Redirecting to login...';
+        this.loading = false;
+        setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err) => {
-        console.error(err);
-        alert(err.error ?? 'Registration failed. Email may already exist.');
+        this.errorMessage = err.error ?? 'Registration failed. Email may already exist.';
+        this.loading = false;
       }
     });
   }

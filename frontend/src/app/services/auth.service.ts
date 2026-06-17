@@ -22,13 +22,28 @@ export class AuthService {
   saveToken(token: string) {
     localStorage.setItem('token', token);
   }
+saveRole(role: string) {
+    localStorage.setItem('role', role);
+  }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  logout() {
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
+  isAdmin(): boolean {
+    return localStorage.getItem('role') === 'Admin';
+  }
+
+  isUser(): boolean {
+    return localStorage.getItem('role') === 'User';
+  }
+   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
   }
 
   isLoggedIn(): boolean {

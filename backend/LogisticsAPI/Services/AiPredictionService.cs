@@ -79,7 +79,7 @@ public class AiPredictionService : IAiPredictionService
             if (string.IsNullOrWhiteSpace(text))
                 return Fallback(request, "Empty response from Groq.");
 
-            // Strip markdown fences if present
+            
             text = text.Trim();
             if (text.Contains("```"))
             {
@@ -94,7 +94,7 @@ public class AiPredictionService : IAiPredictionService
                 }
             }
 
-            // Extract JSON object
+            // Extract JSON obj
             var start = text.IndexOf('{');
             var end   = text.LastIndexOf('}');
 

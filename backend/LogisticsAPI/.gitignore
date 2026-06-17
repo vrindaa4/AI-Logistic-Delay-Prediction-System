@@ -1,2 +1,3 @@
-.angular/
-frontend/.angular/
+
+appsettings.Development.json
+appsettings.Production.json

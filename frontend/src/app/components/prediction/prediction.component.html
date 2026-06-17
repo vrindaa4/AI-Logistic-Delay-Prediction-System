@@ -80,12 +80,21 @@
       <div class="result-card" [class]="getRiskLevelClass(result.riskLevel)">
         <div class="result-header">
           <h3>Risk Level: <span class="risk-badge">{{ result.riskLevel | uppercase }}</span></h3>
+          <span class="source-badge" [class.ai-powered]="result.predictionSource === 'ai'">
+            {{ result.predictionSource === 'ai' ? 'AI Powered' : 'Rule-Based' }}
+          </span>
         </div>
+
 
         <div class="result-details">
           <div class="result-item">
             <span class="label">Delay Probability:</span>
-            <span class="value">{{ (result.probability * 100).toFixed(2) }}%</span>
+            <span class="value">{{ result.estimatedDelayDays }} day(s)</span>
+          </div>
+
+          <div class="result-item full-width" *ngIf="result.aiExplanation">
+            <span class="label">AI Analysis:</span>
+            <p class="recommendation ai-explanation">{{ result.aiExplanation }}</p>
           </div>
 
           <div class="result-item">
@@ -97,6 +106,25 @@
             <span class="label">Recommendation:</span>
             <p class="recommendation">{{ result.recommendation }}</p>
           </div>
+        </div>
+        <div class="result-item full-width" *ngIf="result.trafficData">
+          <span class="label">Route Data:</span>
+          <p class="route-info">
+            {{ (result.trafficData.distance / 1000).toFixed(1) }} km ·
+            {{ result.trafficData.trafficCondition }} traffic ·
+            ~{{ result.trafficData.estimatedDelayMinutes }} min delay
+            <span *ngIf="result.trafficData.weatherCondition"> · {{ result.trafficData.weatherCondition }}</span>
+          </p>
+          <p class="route-source" *ngIf="result.trafficData.dataSource">{{ result.trafficData.dataSource }}</p>
+        </div>
+
+        <div class="result-item full-width" *ngIf="result.factors && (result.factors | keyvalue).length">
+          <span class="label">Factors:</span>
+          <ul class="factors-list">
+            <li *ngFor="let factor of result.factors | keyvalue">
+              <strong>{{ factor.key }}:</strong> {{ factor.value }}
+            </li>
+          </ul>
         </div>
       </div>
 

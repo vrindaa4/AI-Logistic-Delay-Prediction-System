@@ -1,8 +1,13 @@
+using System.Text.Json.Serialization;
+
 namespace LogisticsAPI.Models;
 
 public class Shipment
 {
     public int Id { get; set; }
+
+    public int? UserId { get; set; }
+    public User? User { get; set; }
 
     public string ShipmentNumber { get; set; } = string.Empty;
 
