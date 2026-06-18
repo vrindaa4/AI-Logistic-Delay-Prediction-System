@@ -38,9 +38,9 @@ export class LogisticsService {
   }
 
   
-updateShipmentStatus(id: number, status: string): Observable<void> {
-  return this.http.put<void>(`${this.apiUrl}/shipment/${id}/status`, { status });
-}
+  updateShipment(id: number, shipment: Partial<Shipment>): Observable<Shipment> {
+    return this.http.put<Shipment>(`${this.apiUrl}/shipment/${id}`, shipment);
+  }
 
 
   deleteShipment(id: number): Observable<void> {

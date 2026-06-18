@@ -1,38 +1,38 @@
 export interface Shipment {
   id: number;
   shipmentNumber: string;
+  trackingNumber: string;
   origin: string;
   destination: string;
-  status: string;
   carrier: string;
-  trackingNumber: string;
+  status: string;
   weight: number;
-  estimatedDeliveryDateUtc: Date;
-  createdAtUtc: Date;
-  deliveredAtUtc?: Date;
+  estimatedDeliveryDateUtc: string;
+  createdAtUtc: string;
+  deliveredAtUtc?: string;
+  userId?: number;
 }
-
+export interface TrafficData {
+  distance: number;
+  trafficCondition: string;
+  estimatedDelayMinutes: number;
+  weatherCondition?: string;
+  dataSource?: string;
+}
 export interface PredictionRequest {
   origin: string;
   destination: string;
-  weight: number;
   carrier: string;
+  weight: number;
 }
+
 export interface PredictionResponse {
   delayProbability: number;
   estimatedDelayDays: number;
-  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'low' | 'medium' | 'high';
+  riskLevel: string;
   recommendation: string;
   aiExplanation: string;
   predictionSource: string;
-  trafficData?: {
-    durationInTraffic: number;
-    distance: number;
-    trafficCondition: string;
-    estimatedDelayMinutes: number;
-    weatherCondition?: string;
-    weatherRiskScore?: number;
-    dataSource: string;
-  };
-  factors?: Record<string, string>;
+  trafficData?: TrafficData;
+  factors: { [key: string]: string };
 }

@@ -48,7 +48,7 @@ public class AuthController : ControllerBase
         return Ok(new { message = "User registered successfully" });
     }
 
-// Register a new admin (role = "Admin"). Requires an existing Admin JWT.
+// Register a new admin (role = "Admin"). Requires existing Admin JWT.
 
     [HttpPost("register-admin")]
     [Authorize(Roles = "Admin")]

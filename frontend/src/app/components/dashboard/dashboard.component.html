@@ -12,24 +12,20 @@
         <h3>Total Shipments</h3>
         <p class="metric-value">{{ totalShipments }}</p>
       </div>
-
       <div class="metric-card">
         <h3>In Transit</h3>
         <p class="metric-value">{{ inTransitShipments }}</p>
       </div>
-
       <div class="metric-card">
         <h3>Delivered</h3>
         <p class="metric-value">{{ deliveredShipments }}</p>
       </div>
-
       <div class="metric-card metric-card-alert">
         <h3>Delayed</h3>
         <p class="metric-value">{{ delayedShipments }}</p>
       </div>
     </div>
 
-   
     <div class="recent-shipments">
       <h2>Recent Shipments</h2>
 
@@ -40,10 +36,11 @@
       <table *ngIf="shipments.length > 0" class="shipments-table">
         <thead>
           <tr>
-            <th (click)="onSortColumnClick('shipmentNumber')" class="sortable-header" 
+            <th (click)="onSortColumnClick('shipmentNumber')" class="sortable-header"
                 [class.active-sort]="sortColumn === 'shipmentNumber'">
               Shipment Number{{ getSortIndicator('shipmentNumber') }}
             </th>
+            <th>Tracking ID</th>
             <th (click)="onSortColumnClick('origin')" class="sortable-header"
                 [class.active-sort]="sortColumn === 'origin'">
               Origin{{ getSortIndicator('origin') }}
@@ -65,6 +62,7 @@
         <tbody>
           <tr *ngFor="let shipment of shipments | slice:0:10">
             <td>{{ shipment.shipmentNumber }}</td>
+            <td><code>{{ shipment.trackingNumber }}</code></td>
             <td>{{ shipment.origin }}</td>
             <td>{{ shipment.destination }}</td>
             <td><span [class]="'badge ' + getStatusClass(shipment.status)">{{ shipment.status }}</span></td>

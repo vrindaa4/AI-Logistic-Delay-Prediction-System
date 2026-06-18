@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LogisticsService } from '../../services/logistics.service';
 import { Shipment } from '../../models/logistics.model';
@@ -7,7 +7,7 @@ import { Shipment } from '../../models/logistics.model';
 @Component({
   selector: 'app-shipment-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './shipment-list.component.html',
   styleUrls: ['./shipment-list.component.scss']
 })
@@ -41,10 +41,12 @@ export class ShipmentListComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredShipments = this.shipments.filter(shipment => {
-      const matchesSearch = 
-        shipment.shipmentNumber.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        shipment.origin.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        shipment.destination.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const term = this.searchTerm.toLowerCase();
+      const matchesSearch =
+        shipment.shipmentNumber.toLowerCase().includes(term) ||
+        (shipment.trackingNumber ?? '').toLowerCase().includes(term) ||
+        shipment.origin.toLowerCase().includes(term) ||
+        shipment.destination.toLowerCase().includes(term);
 
       const matchesStatus = !this.selectedStatus || shipment.status === this.selectedStatus;
 
@@ -52,23 +54,14 @@ export class ShipmentListComponent implements OnInit {
     });
   }
 
-  onSearchChange(): void {
-    this.applyFilters();
-  }
-
-  onStatusChange(): void {
-    this.applyFilters();
-  }
+  onSearchChange(): void { this.applyFilters(); }
+  onStatusChange(): void { this.applyFilters(); }
 
   deleteShipment(id: number): void {
     if (confirm('Are you sure you want to delete this shipment?')) {
       this.logisticsService.deleteShipment(id).subscribe({
-        next: () => {
-          this.loadShipments();
-        },
-        error: (error: any) => {
-          console.error('Error deleting shipment:', error);
-        }
+        next: () => { this.loadShipments(); },
+        error: (error: any) => { console.error('Error deleting shipment:', error); }
       });
     }
   }

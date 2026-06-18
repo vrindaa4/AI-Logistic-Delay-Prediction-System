@@ -34,9 +34,9 @@ public class ShipmentService
             Destination = dto.Destination,
             Status = "in-transit",
             Carrier = string.IsNullOrWhiteSpace(dto.Carrier) ? "Default Carrier" : dto.Carrier,
-            TrackingNumber = string.IsNullOrWhiteSpace(dto.TrackingNumber)
-                ? Guid.NewGuid().ToString()
-                : dto.TrackingNumber,
+            TrackingNumber = (string.IsNullOrWhiteSpace(dto.TrackingNumber) || dto.TrackingNumber == "string")
+             ? Guid.NewGuid().ToString()
+             : dto.TrackingNumber,   
             EstimatedDeliveryDateUtc = dto.EstimatedDeliveryDateUtc ?? DateTime.UtcNow.AddDays(5),
             CreatedAtUtc = DateTime.UtcNow
         };

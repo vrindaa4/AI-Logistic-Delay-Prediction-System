@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, SlicePipe, DatePipe } from '@angular/common';
 import { LogisticsService } from '../../services/logistics.service';
 import { Shipment } from '../../models/logistics.model';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SlicePipe, DatePipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -17,8 +17,7 @@ export class DashboardComponent implements OnInit {
   inTransitShipments = 0;
   deliveredShipments = 0;
   loading = true;
-  
-  // Sorting properties
+
   sortColumn: string = 'shipmentNumber';
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -55,54 +54,29 @@ export class DashboardComponent implements OnInit {
     this.shipments.sort((a, b) => {
       let aValue: any;
       let bValue: any;
-
-      // Get values based on sort column
       switch (this.sortColumn) {
-        case 'shipmentNumber':
-          aValue = a.shipmentNumber;
-          bValue = b.shipmentNumber;
-          break;
-        case 'origin':
-          aValue = a.origin;
-          bValue = b.origin;
-          break;
-        case 'destination':
-          aValue = a.destination;
-          bValue = b.destination;
-          break;
-        case 'status':
-          aValue = a.status;
-          bValue = b.status;
-          break;
+        case 'shipmentNumber': aValue = a.shipmentNumber; bValue = b.shipmentNumber; break;
+        case 'origin':         aValue = a.origin;         bValue = b.origin;         break;
+        case 'destination':    aValue = a.destination;    bValue = b.destination;    break;
+        case 'status':         aValue = a.status;         bValue = b.status;         break;
         case 'estimatedDelivery':
           aValue = new Date(a.estimatedDeliveryDateUtc).getTime();
           bValue = new Date(b.estimatedDeliveryDateUtc).getTime();
           break;
-        default:
-          return 0;
+        default: return 0;
       }
-
-      // Compare values
       if (typeof aValue === 'string') {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
-        return this.sortDirection === 'asc' 
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else {
-        return this.sortDirection === 'asc' 
-          ? aValue - bValue
-          : bValue - aValue;
+        aValue = aValue.toLowerCase(); bValue = bValue.toLowerCase();
+        return this.sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
       }
+      return this.sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
     });
   }
 
   onSortColumnClick(column: string): void {
     if (this.sortColumn === column) {
-      // Toggle sort direction if clicking same column
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      // Change to new column, default to ascending
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }

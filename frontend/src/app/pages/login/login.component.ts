@@ -27,6 +27,7 @@ export class LoginComponent {
   selectRole(role: 'User' | 'Admin'): void {
     this.selectedRole = role;
     this.errorMessage = '';
+    
   }
 
   login(): void {
@@ -45,6 +46,7 @@ export class LoginComponent {
 
           this.authService.saveToken(response.token);
           this.authService.saveRole(response.role);
+          this.authService.saveName(response.name); 
 
           if (response.role === 'Admin') {
             this.router.navigate(['/dashboard']);

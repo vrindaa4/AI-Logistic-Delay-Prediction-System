@@ -29,20 +29,28 @@ public class AiPredictionService : IAiPredictionService
             return Fallback(request, "No Groq API key configured.");
 
         var prompt = $$"""
-            You are a logistics delay prediction expert.
-            Analyze this shipment and return ONLY raw JSON with no markdown, no explanation, no code blocks.
+            You are a logistics delay prediction expert with deep knowledge of global shipping routes, carrier performance, and risk factors.
 
-            Shipment:
+            Analyze the shipment below and predict delay probability. Think step by step:
+            1. Assess route risk (distance, cross-border complexity, regional congestion)2. Evaluate carrier reliability (FedEx/UPS/DHL = tier-1; others = assess carefully)
+            3. Factor in weight impact on handling and transit time
+            4. Combine factors into a final risk score
+
+            Shipment details:
             - Origin: {{request.Origin}}
             - Destination: {{request.Destination}}
             - Carrier: {{request.Carrier}}
             - Weight: {{request.Weight}} kg
+            Scoring rules:
+            - Base probability: 0.10 (all shipments have inherent risk)
+            - Long route (>500 km): +0.10 | Cross-border: +0.08 | Heavy (>500 kg): +0.08 | Very heavy (>1000 kg): +0.15
+            - Tier-1 carrier: -0.05 | Unknown/budget carrier: +0.10
+            - Cap final value between 0.05 and 0.95
 
-            Consider route distance, road conditions, carrier reliability
-            (FedEx/UPS/DHL = reliable, others = less reliable), and weight.
-
-            You MUST respond with ONLY this JSON structure, nothing else before or after:
-            {"delayProbability":0.2,"estimatedDelayDays":0,"riskLevel":"low","recommendation":"your recommendation here","explanation":"your two sentence explanation here"}
+            Risk levels: low = <0.35 | medium = 0.35–0.65 | high = >0.65
+            Delay days: 0 if low, 1–2 if medium, 3+ if high
+            You MUST respond with ONLY this exact JSON — no markdown, no explanation, no text before or after:
+            {"delayProbability":0.35,"estimatedDelayDays":1,"riskLevel":"medium","recommendation":"Actionable 1-sentence advice for this specific route and carrier","explanation":"Sentence 1: main risk factor. Sentence 2: what to watch for."}
             """;
 
         try

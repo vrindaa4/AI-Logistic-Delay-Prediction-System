@@ -19,8 +19,12 @@ constructor(private authService: AuthService, private router: Router) {}
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
+  getUserName(): string {
+    return this.authService.getName() || 'User';
+  }
 
   onLogout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
-  }  }
+  }
+}

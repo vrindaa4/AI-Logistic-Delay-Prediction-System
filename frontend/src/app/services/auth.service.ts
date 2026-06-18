@@ -26,6 +26,14 @@ saveRole(role: string) {
     localStorage.setItem('role', role);
   }
 
+  saveName(name: string) {
+    localStorage.setItem('name', name);
+  }
+
+  getName(): string | null {
+    return localStorage.getItem('name');
+  }
+
   getToken(): string | null {
     return localStorage.getItem('token');
   }
@@ -44,6 +52,7 @@ saveRole(role: string) {
    logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('name');
   }
 
   isLoggedIn(): boolean {

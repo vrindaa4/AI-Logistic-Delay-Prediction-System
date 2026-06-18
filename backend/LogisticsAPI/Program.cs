@@ -80,17 +80,17 @@ builder.Services.AddAuthentication(
     {
         OnAuthenticationFailed = ctx =>
         {
-            Console.WriteLine($"❌ JWT REJECTED: {ctx.Exception.GetType().Name}: {ctx.Exception.Message}");
+            Console.WriteLine($" JWT REJECTED: {ctx.Exception.GetType().Name}: {ctx.Exception.Message}");
             return Task.CompletedTask;
         },
         OnTokenValidated = ctx =>
         {
-            Console.WriteLine("✅ JWT validated OK");
+            Console.WriteLine(" JWT validated OK");
             return Task.CompletedTask;
         },
         OnChallenge = ctx =>
         {
-            Console.WriteLine($"⚠️ Challenge issued. Error: {ctx.Error}, Desc: {ctx.ErrorDescription}");
+            Console.WriteLine($"Challenge issued. Error: {ctx.Error}, Desc: {ctx.ErrorDescription}");
             return Task.CompletedTask;
         }
     };
