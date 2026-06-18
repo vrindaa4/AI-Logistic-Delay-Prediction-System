@@ -168,5 +168,16 @@
     td {
       padding: 0.75rem;
     }
+
   }
+}
+
+.btn-create-admin {
+  padding: 0.5rem 1.2rem;
+  background: #1e3a5f;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  &:hover { background: #378ADD; }
 }

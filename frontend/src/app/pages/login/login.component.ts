@@ -31,35 +31,37 @@ export class LoginComponent {
   }
 
   login(): void {
-    this.errorMessage = '';
-    this.loading = true;
+  this.errorMessage = '';
+  this.loading = true;
 
-    const data = {
-      email: this.email,
-      password: this.password
-    };
+  this.authService.login({ email: this.email, password: this.password })
+    .subscribe({
+      next: (response: any) => {
+        this.loading = false;
 
-    this.authService.login(data)
-      .subscribe({
-        next: (response: any) => {
-          this.loading = false;
-
-          this.authService.saveToken(response.token);
-          this.authService.saveRole(response.role);
-          this.authService.saveName(response.name); 
-
-          if (response.role === 'Admin') {
-            this.router.navigate(['/dashboard']);
-          } else {
-            this.router.navigate(['/shipments']);
-          }
-        },
-
-        error: (err) => {
-          this.loading = false;
-          console.error(err);
-          this.errorMessage = 'Invalid email or password.';
+        // Validate that the actual account role matches the tab the user selected
+        if (response.role !== this.selectedRole) {
+          this.errorMessage = this.selectedRole === 'Admin'
+            ? 'This account does not have Admin access.'
+            : 'This is an Admin account. Please use the Admin tab to log in.';
+          return;
         }
-      });
-  }
+
+        this.authService.saveToken(response.token);
+        this.authService.saveRole(response.role);
+        this.authService.saveName(response.name);
+
+        if (response.role === 'Admin') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/shipments']);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error(err);
+        this.errorMessage = 'Invalid email or password.';
+      }
+    });
+}
 }

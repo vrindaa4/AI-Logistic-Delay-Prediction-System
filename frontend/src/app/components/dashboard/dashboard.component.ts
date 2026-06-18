@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, SlicePipe, DatePipe } from '@angular/common';
 import { LogisticsService } from '../../services/logistics.service';
 import { Shipment } from '../../models/logistics.model';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, SlicePipe, DatePipe],
+  imports: [CommonModule, SlicePipe, DatePipe, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

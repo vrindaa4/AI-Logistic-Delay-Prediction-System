@@ -1,5 +1,8 @@
 <div class="dashboard-container">
   <h1>Dashboard</h1>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+  <a routerLink="/register-admin" class="btn-create-admin">🛡️ Create Admin</a>
+</div>
 
   <div *ngIf="loading" class="loading">
     <p>Loading dashboard data...</p>
