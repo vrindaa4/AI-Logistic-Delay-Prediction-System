@@ -5,7 +5,7 @@ AI-powered logistics system to predict shipment delays and optimize delivery ope
 - Backend: ASP.NET Core Web API
 - Frontend: Angular
 - Database: SQLServer
-- AI/ML: External APIs
+- ML: Groq APIs
 
 ## Features
 - Shipment tracking system

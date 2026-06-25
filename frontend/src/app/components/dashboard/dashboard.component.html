@@ -39,11 +39,14 @@
       <table *ngIf="shipments.length > 0" class="shipments-table">
         <thead>
           <tr>
+            <th (click)="onSortColumnClick('trackingNumber')" class="sortable-header"
+                [class.active-sort]="sortColumn === 'trackingNumber'">
+              Tracking ID{{ getSortIndicator('trackingNumber') }}
+            </th>
             <th (click)="onSortColumnClick('shipmentNumber')" class="sortable-header"
                 [class.active-sort]="sortColumn === 'shipmentNumber'">
               Shipment Number{{ getSortIndicator('shipmentNumber') }}
             </th>
-            <th>Tracking ID</th>
             <th (click)="onSortColumnClick('origin')" class="sortable-header"
                 [class.active-sort]="sortColumn === 'origin'">
               Origin{{ getSortIndicator('origin') }}
@@ -56,20 +59,19 @@
                 [class.active-sort]="sortColumn === 'status'">
               Status{{ getSortIndicator('status') }}
             </th>
-            <th (click)="onSortColumnClick('estimatedDelivery')" class="sortable-header"
-                [class.active-sort]="sortColumn === 'estimatedDelivery'">
-              Est. Delivery{{ getSortIndicator('estimatedDelivery') }}
-            </th>
+            <th>Carrier</th>
+            <th>Weight</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let shipment of shipments | slice:0:10">
-            <td>{{ shipment.shipmentNumber }}</td>
-            <td><code>{{ shipment.trackingNumber }}</code></td>
+            <td>{{ shipment.trackingNumber }}</td>
+            <td><code>{{ shipment.shipmentNumber }}</code></td>
             <td>{{ shipment.origin }}</td>
             <td>{{ shipment.destination }}</td>
             <td><span [class]="'badge ' + getStatusClass(shipment.status)">{{ shipment.status }}</span></td>
-            <td>{{ shipment.estimatedDeliveryDateUtc | date:'short' }}</td>
+            <td>{{ shipment.carrier }}</td>
+            <td>{{ shipment.weight }} kg</td>
           </tr>
         </tbody>
       </table>

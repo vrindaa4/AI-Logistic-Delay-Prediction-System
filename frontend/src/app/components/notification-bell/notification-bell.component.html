@@ -1,0 +1,43 @@
+<div class="notification-bell">
+  <button class="bell-button" (click)="toggleDropdown()" aria-label="Notifications">
+    <svg viewBox="0 0 24 24" class="bell-icon" fill="currentColor">
+      <path d="M12 2a6 6 0 0 0-6 6v3.2c0 .9-.36 1.77-1 2.4L3.6 15c-.7.7-.2 1.9.8 1.9h15.2c1 0 1.5-1.2.8-1.9l-1.4-1.4a3.4 3.4 0 0 1-1-2.4V8a6 6 0 0 0-6-6z"/>
+      <path d="M9.5 19a2.5 2.5 0 0 0 5 0h-5z"/>
+    </svg>
+    <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+  </button>
+
+  <div class="dropdown" *ngIf="dropdownOpen">
+    <div class="dropdown-header">
+      <h4>Notifications</h4>
+      <button class="mark-all-btn" *ngIf="unreadCount > 0" (click)="markAllAsRead()">
+        Mark all read
+      </button>
+    </div>
+
+    <div class="dropdown-list">
+      <div *ngIf="notifications.length === 0" class="empty-state">
+        No notifications yet
+      </div>
+
+      <div
+        *ngFor="let n of notifications"
+        class="notification-item"
+        [class.unread]="!n.isRead"
+        (click)="onItemClick(n)"
+      >
+        <div class="item-title">{{ n.title }}</div>
+        <div class="item-message">{{ n.message }}</div>
+        <div class="item-time">{{ n.createdAtUtc | date:'short' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" *ngIf="toastNotification" (click)="dismissToast()">
+    <div class="toast-icon">!</div>
+    <div class="toast-body">
+      <strong>{{ toastNotification.title }}</strong>
+      <p>{{ toastNotification.message }}</p>
+    </div>
+  </div>
+</div>

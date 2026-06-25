@@ -23,8 +23,6 @@ public class AuthController : ControllerBase
         _context = context;
         _jwtService = jwtService;
     }
-
-    // Register a new regular user (role = "User").
   
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
@@ -48,7 +46,6 @@ public class AuthController : ControllerBase
         return Ok(new { message = "User registered successfully" });
     }
 
-// Register a new admin (role = "Admin"). Requires existing Admin JWT.
 
     [HttpPost("register-admin")]
     [Authorize(Roles = "Admin")]
@@ -106,7 +103,6 @@ public async Task<IActionResult> SeedAdmin()
 
     if (existingAdmin != null)
     {
-        // Reset the password instead of blocking
         existingAdmin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("H&RAdmin123");
         await _context.SaveChangesAsync();
         return Ok(new { message = "Admin password reset successfully" });
@@ -124,14 +120,5 @@ public async Task<IActionResult> SeedAdmin()
     await _context.SaveChangesAsync();
     return Ok(new { message = "Admin seeded successfully" });
 }
-[HttpGet("debug-admin")]
-public async Task<IActionResult> DebugAdmin()
-{
-    var admin = await _context.Users
-        .Where(u => u.Role == "Admin")
-        .Select(u => new { u.Id, u.Email, u.Name, u.Role })
-        .FirstOrDefaultAsync();
 
-    return Ok(admin);
-}
 }

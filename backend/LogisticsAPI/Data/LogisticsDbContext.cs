@@ -11,7 +11,9 @@ public class LogisticsDbContext : DbContext
 
     public DbSet<Shipment> Shipments { get; set; }
     public DbSet<User> Users { get; set; }
-    //public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+
+    public DbSet<ShipmentTrackingEvent> ShipmentTrackingEvents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -7,57 +7,51 @@ namespace LogisticsAPI.Services;
 public class ShipmentService
 {
     private readonly IShipmentRepository _repo;
+    private readonly INotificationService _notificationService;
 
-    public ShipmentService(IShipmentRepository repo)
+    public ShipmentService(IShipmentRepository repo, INotificationService notificationService)
     {
         _repo = repo;
+        _notificationService = notificationService;
     }
 
-    // Admin: all shipments
     public List<Shipment> GetAll() => _repo.GetAll();
-
-    // Admin: any shipment by id
     public Shipment? GetById(int id) => _repo.GetById(id);
-
-
-    // User: only their own shipments
     public List<Shipment> GetByUserId(int userId) => _repo.GetByUserId(userId);
     public Shipment? GetByIdForUser(int id, int userId) => _repo.GetByIdForUser(id, userId);
 
-
-    public Shipment Create(CreateShipmentDto dto, int userId)
+    public async Task<Shipment> CreateAsync(CreateShipmentDto dto, int userId) 
     {
         var shipment = new Shipment
         {
             UserId = userId,
             Origin = dto.Origin,
             Destination = dto.Destination,
-            Status = "in-transit",
+            Status =  "pending",  
             Carrier = string.IsNullOrWhiteSpace(dto.Carrier) ? "Default Carrier" : dto.Carrier,
-            TrackingNumber = (string.IsNullOrWhiteSpace(dto.TrackingNumber) || dto.TrackingNumber == "string")
-             ? Guid.NewGuid().ToString()
-             : dto.TrackingNumber,   
+            TrackingNumber = $"TRK{Guid.NewGuid():N}".Substring(0, 6),
+            Weight = dto.Weight,
             EstimatedDeliveryDateUtc = dto.EstimatedDeliveryDateUtc ?? DateTime.UtcNow.AddDays(5),
             CreatedAtUtc = DateTime.UtcNow
         };
 
-    // Save first to get the DB-assigned Id
         var saved = _repo.Add(shipment);
-
-        // Auto-generate shipment number from Id
         saved.ShipmentNumber = $"SHIP-{saved.Id:D3}";
         _repo.Update(saved);
+        await _notificationService.NotifyShipmentCreatedAsync(saved);
+        return saved;
+    }
 
-        return saved;    }
-
-    public void UpdateStatus(int id, string status)
+    public async Task UpdateStatusAsync(int id, string status)
     {
         var shipment = _repo.GetById(id);
-        if (shipment != null)
-        {
-            shipment.Status = status;
-            _repo.Update(shipment);
-        }
+        if (shipment == null) return;
+
+        var previousStatus = shipment.Status;
+        shipment.Status = status;
+        _repo.Update(shipment);
+
+         await _notificationService.NotifyStatusChangedAsync(shipment, previousStatus);
     }
 
     public void Delete(int id) => _repo.Delete(id);

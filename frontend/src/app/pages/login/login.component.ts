@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+     private notificationService: NotificationService,
   ) {}
 
   selectRole(role: 'User' | 'Admin'): void {
@@ -39,7 +41,6 @@ export class LoginComponent {
       next: (response: any) => {
         this.loading = false;
 
-        // Validate that the actual account role matches the tab the user selected
         if (response.role !== this.selectedRole) {
           this.errorMessage = this.selectedRole === 'Admin'
             ? 'This account does not have Admin access.'
@@ -49,7 +50,8 @@ export class LoginComponent {
 
         this.authService.saveToken(response.token);
         this.authService.saveRole(response.role);
-        this.authService.saveName(response.name);
+        this.authService.saveName(response.name);        
+        this.notificationService.connect();
 
         if (response.role === 'Admin') {
           this.router.navigate(['/dashboard']);

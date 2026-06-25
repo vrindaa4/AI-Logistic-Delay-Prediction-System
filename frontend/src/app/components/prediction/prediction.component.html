@@ -61,10 +61,19 @@
             min="0"
           />
         </div>
+        <div *ngIf="delayNotificationMessage" class="alert alert-warning">
+           {{ delayNotificationMessage }}
+        </div>
+        <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+        </div>
 
         <div class="form-actions">
           <button type="submit" class="btn btn-primary" [disabled]="loading">
             {{ loading ? 'Predicting...' : 'Predict Delay' }}
+          </button>
+          <button type="button" class="btn btn-success" (click)="createShipment()" [disabled]="creating">
+            {{ creating ? 'Creating...' : 'Create Shipment' }}
           </button>
           <button type="button" class="btn btn-secondary" (click)="reset()">
             Reset

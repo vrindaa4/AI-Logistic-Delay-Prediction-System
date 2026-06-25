@@ -102,7 +102,6 @@ public class AiPredictionService : IAiPredictionService
                 }
             }
 
-            // Extract JSON obj
             var start = text.IndexOf('{');
             var end   = text.LastIndexOf('}');
 

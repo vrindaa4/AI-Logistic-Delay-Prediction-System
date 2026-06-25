@@ -16,6 +16,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'register-admin', component: RegisterAdminComponent, canActivate: [adminGuard] },
-  { path: '**', redirectTo: '/login' } 
-
+  { path: '**', redirectTo: '/login' }
 ];

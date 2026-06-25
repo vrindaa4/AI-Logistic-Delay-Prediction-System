@@ -14,10 +14,14 @@ public class ShipmentController : ControllerBase
     private readonly ShipmentService _service;
     private readonly PredictionService _predictionService;
 
-    public ShipmentController(ShipmentService service, PredictionService predictionService)
+    private readonly INotificationService _notificationService;  
+
+
+    public ShipmentController(ShipmentService service, PredictionService predictionService, INotificationService notificationService)
     {
         _service = service;
         _predictionService = predictionService;
+        _notificationService = notificationService;
     }
 
     [Authorize(Roles = "Admin")]
@@ -66,55 +70,54 @@ public class ShipmentController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateShipmentDto dto)
-    {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+public async Task<IActionResult> Create(CreateShipmentDto dto)
+{
+    if (!ModelState.IsValid) return BadRequest(ModelState);
+    if (!TryGetUserId(out int userId)) return Unauthorized();
 
-        if (!TryGetUserId(out int userId))
-            return Unauthorized();
+    var shipment = await _service.CreateAsync(dto, userId);  // now async
 
-        var shipment = _service.Create(dto, userId);
+    return CreatedAtAction(nameof(GetMineById), new { id = shipment.Id }, shipment);
+}
 
-        var prediction = await _predictionService.PredictDelayAsync(new PredictionRequestDto
-        {
-            Origin = dto.Origin,
-            Destination = dto.Destination,
-            Carrier = dto.Carrier ?? "Default Carrier"
-        });
 
-        return CreatedAtAction(nameof(GetMineById), new { id = shipment.Id }, new
-        {
-            shipment,
-            prediction
-        });
-    }
-
-    [AllowAnonymous]
     [HttpPost("predict")]
+    [Authorize]
     public async Task<IActionResult> Predict([FromBody] PredictionRequestDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Origin) || string.IsNullOrWhiteSpace(dto.Destination))
             return BadRequest(new { message = "Origin and destination are required." });
 
         var result = await _predictionService.PredictDelayAsync(dto);
+        if (result.RiskLevel != null &&
+        !string.Equals(result.RiskLevel, "low", StringComparison.OrdinalIgnoreCase) &&
+        TryGetUserId(out int userId))
+    {
+        var fakeShipment = new LogisticsAPI.Models.Shipment
+        {
+            UserId = userId,
+            Origin = dto.Origin,
+            Destination = dto.Destination,
+            ShipmentNumber = "PENDING"
+        };
+        await _notificationService.NotifyDelayAsync(fakeShipment);
+    }
         return Ok(result);
     }
 
-    [HttpPut("{id}/status")]
-    public IActionResult UpdateStatus(int id, UpdateShipmentStatusDto dto)
+[HttpPut("{id}/status")]
+public async Task<IActionResult> UpdateStatus(int id, UpdateShipmentStatusDto dto)
+{
+    var existing = _service.GetById(id);
+    if (existing == null) return NotFound();
+    if (!User.IsInRole("Admin"))
     {
-        var existing = _service.GetById(id);
-        if (existing == null) return NotFound();
-
-        if (!User.IsInRole("Admin"))
-        {
-            if (!TryGetUserId(out int userId) || existing.UserId != userId)
-                return Forbid();
-        }
-
-        _service.UpdateStatus(id, dto.Status);
-        return NoContent();
+        if (!TryGetUserId(out int userId) || existing.UserId != userId)
+            return Forbid();
     }
+    await _service.UpdateStatusAsync(id, dto.Status);
+    return NoContent();
+}
 
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)

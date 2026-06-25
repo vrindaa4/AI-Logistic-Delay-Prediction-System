@@ -12,6 +12,7 @@ public class ShipmentResponseDto
     public string? Carrier { get; set; }
     [Required]
     public string? TrackingNumber { get; set; }
+    public double Weight { get; set; } 
     public DateTime EstimatedDeliveryDateUtc { get; set; }
     [Required]
     public string? Status { get; set; }

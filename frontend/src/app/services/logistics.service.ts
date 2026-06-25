@@ -16,7 +16,6 @@ export class LogisticsService {
 
  
  getShipments(): Observable<Shipment[]> {
-    // Admin gets all, User gets only their own
     const url = this.authService.isAdmin()
       ? `${this.apiUrl}/shipment`
       : `${this.apiUrl}/shipment/my`;
@@ -41,6 +40,9 @@ export class LogisticsService {
   updateShipment(id: number, shipment: Partial<Shipment>): Observable<Shipment> {
     return this.http.put<Shipment>(`${this.apiUrl}/shipment/${id}`, shipment);
   }
+  updateShipmentStatus(id: number, status: string): Observable<void> {
+  return this.http.put<void>(`${this.apiUrl}/shipment/${id}/status`, { status });
+}
 
 
   deleteShipment(id: number): Observable<void> {

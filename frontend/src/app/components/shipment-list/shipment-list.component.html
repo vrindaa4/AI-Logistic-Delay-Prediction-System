@@ -1,6 +1,6 @@
 <div class="shipment-list-container">
-  <h1>All Shipments</h1>
-
+<h1>{{ isAdmin ? 'All Shipments' : 'My Shipments' }}</h1>
+<div *ngIf="updateMessage" class="alert alert-success">{{ updateMessage }}</div>
   <div class="controls">
     <input
       type="text"
@@ -35,31 +35,46 @@
     <div *ngIf="filteredShipments.length > 0" class="table-responsive">
       <table class="shipments-table">
         <thead>
-          <tr>
-            <th>Shipment Number</th>
-            <th>Tracking ID</th>
-            <th>Origin</th>
-            <th>Destination</th>
-            <th>Carrier</th>
-            <th>Est. Delivery</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let shipment of filteredShipments">
-            <td>{{ shipment.shipmentNumber }}</td>
-            <td><code>{{ shipment.trackingNumber }}</code></td>
-            <td>{{ shipment.origin }}</td>
-            <td>{{ shipment.destination }}</td>
-            <td>{{ shipment.carrier }}</td>
-            <td>{{ shipment.estimatedDeliveryDateUtc | date:'short' }}</td>
-            <td><span [class]="'badge ' + getStatusClass(shipment.status)">{{ shipment.status }}</span></td>
-            <td>
-              <button class="btn-small btn-danger" (click)="deleteShipment(shipment.id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
+  <tr>
+    <th>Tracking ID</th>
+    <th>Shipment Number</th>
+    <th>Origin</th>
+    <th>Destination</th>
+    <th>Carrier</th>
+    <!-- <th>Est. Delivery</th> -->
+    <th>Weight</th>
+    <th>Status</th>
+    <th *ngIf="isAdmin">Change Status</th>
+    <th *ngIf="isAdmin">Actions</th>
+  </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let shipment of filteredShipments">
+    <td><strong>{{ shipment.trackingNumber }}</strong></td>
+    <td>{{ shipment.shipmentNumber }}</td>
+    <td>{{ shipment.origin }}</td>
+    <td>{{ shipment.destination }}</td>
+    <td>{{ shipment.carrier }}</td>
+    <!-- <td>{{ shipment.estimatedDeliveryDateUtc | date:'short' }}</td> -->
+    <td>{{ shipment.weight }} kg</td>
+<td><span [class]="'badge ' + getStatusClass(shipment.status)">{{ shipment.status }}</span></td>
+
+<!-- Admin only: status picker -->
+<td *ngIf="isAdmin">
+  <div class="status-change">
+    <select [(ngModel)]="statusMap[shipment.id]">
+      <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+    </select>
+    <button class="btn btn-sm btn-primary" (click)="updateStatus(shipment)">Update</button>
+  </div>
+</td>
+<!-- Admin only: delete -->
+<td *ngIf="isAdmin">
+  <button class="btn-small btn-danger" (click)="deleteShipment(shipment.id)">Delete</button>
+</td>
+
+  </tr>
+</tbody>
       </table>
     </div>
   </div>

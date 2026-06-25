@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, SlicePipe, DatePipe } from '@angular/common';
+import { CommonModule, SlicePipe } from '@angular/common';
 import { LogisticsService } from '../../services/logistics.service';
 import { Shipment } from '../../models/logistics.model';
 import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, SlicePipe, DatePipe, RouterLink],
+  imports: [CommonModule, SlicePipe, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -59,10 +59,7 @@ export class DashboardComponent implements OnInit {
         case 'origin':         aValue = a.origin;         bValue = b.origin;         break;
         case 'destination':    aValue = a.destination;    bValue = b.destination;    break;
         case 'status':         aValue = a.status;         bValue = b.status;         break;
-        case 'estimatedDelivery':
-          aValue = new Date(a.estimatedDeliveryDateUtc).getTime();
-          bValue = new Date(b.estimatedDeliveryDateUtc).getTime();
-          break;
+        case 'trackingNumber': aValue = a.trackingNumber; bValue = b.trackingNumber; break;
         default: return 0;
       }
       if (typeof aValue === 'string') {

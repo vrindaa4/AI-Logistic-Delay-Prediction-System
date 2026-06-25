@@ -14,6 +14,8 @@ public class CreateShipmentDto
     public string? Carrier { get; set; }
     [RegularExpression(@"^(?!string$).*", ErrorMessage = "Please enter a valid tracking number")]
     public string? TrackingNumber { get; set; }
+
+     public double Weight { get; set; }    
     
     public DateTime? EstimatedDeliveryDateUtc { get; set; }
    

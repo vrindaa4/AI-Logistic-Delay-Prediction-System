@@ -44,6 +44,7 @@ saveRole(role: string) {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
+  
 
   isAdmin(): boolean {
     return localStorage.getItem('role') === 'Admin';

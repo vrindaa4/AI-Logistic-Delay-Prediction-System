@@ -12,6 +12,3 @@ export const authGuard: CanActivateFn = () => {
 
   return router.createUrlTree(['/login']);
 };
-
-//Automatically attach the JWT token to every API request so that protected ASP.NET Core endpoints can identify the logged-in user.
-//file defines an HTTP Interceptor in Angular.

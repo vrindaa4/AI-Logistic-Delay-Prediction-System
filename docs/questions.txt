@@ -1,0 +1,17 @@
+1.explain oops concepts 
+2.what is an Interface 
+3.how we are implementing interface in project explain with an eg 
+//in code
+4. what is service registration
+5.what is di , types of di 
+6.diff types of http methods
+7. diff bw post put and patch
+8. what are diff types of service registration
+9.purpose of program.cs
+10.jwt token 
+auth vs authorization
+11.signalr
+
+
+components
+what is 

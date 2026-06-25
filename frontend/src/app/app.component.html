@@ -5,6 +5,7 @@
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
       <a routerLink="/shipments" routerLinkActive="active">Shipments</a>
       <a routerLink="/predict" routerLinkActive="active">Predict Delay</a>
+      <app-notification-bell></app-notification-bell>
       <span class="user-greeting">{{ getUserName() }}</span> 
         <button class="logout-btn" (click)="onLogout()">Logout</button>
 

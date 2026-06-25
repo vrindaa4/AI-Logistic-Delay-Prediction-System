@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LogisticsService } from '../../services/logistics.service';
+import { NotificationService } from '../../services/notification.service';
 import { PredictionRequest, PredictionResponse } from '../../models/logistics.model';
 
 @Component({
@@ -21,28 +22,69 @@ export class PredictionComponent {
 
   result: PredictionResponse | null = null;
   loading = false;
-  submitted = false;
+  creating = false;
   errorMessage = '';
+  successMessage = '';
+  delayNotificationMessage = '';
 
-  constructor(private logisticsService: LogisticsService) {}
+  constructor(
+    private logisticsService: LogisticsService,
+    private notificationService: NotificationService
+  ) {}
 
   onSubmit(): void {
-    if (this.validateForm()) {
-      this.loading = true;
-      this.errorMessage = '';
-      
-      this.logisticsService.predictDelay(this.predictionForm).subscribe({
-        next: (response: PredictionResponse) => {
-          this.result = response;
-          this.loading = false;
-        },
-        error: (error: any) => {
-          console.error('Error predicting delay:', error);
-          this.errorMessage = 'Failed to predict delay. Please try again.';
-          this.loading = false;
+    if (!this.validateForm()) return;
+    this.loading = true;
+    this.errorMessage = '';
+    this.delayNotificationMessage = '';
+
+    this.logisticsService.predictDelay(this.predictionForm).subscribe({
+      next: (response: PredictionResponse) => {
+        this.result = response;
+        this.loading = false;
+
+        // If delay predicted, show notification banner
+        const isDelayed = response.riskLevel?.toLowerCase() !== 'low';
+        if (isDelayed) {
+          this.delayNotificationMessage = 'Shipment is predicted to be delayed.';
+          // Refresh notification bell count (backend already saved it)
+          this.notificationService.refreshUnreadCount();
         }
-      });
-    }
+      },
+      error: (error: any) => {
+        console.error('Error predicting delay:', error);
+        this.errorMessage = 'Failed to predict delay. Please try again.';
+        this.loading = false;
+      }
+    });
+  }
+
+  createShipment(): void {
+    if (!this.validateForm()) return;
+    this.creating = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    const dto = {
+      origin: this.predictionForm.origin,
+      destination: this.predictionForm.destination,
+      carrier: this.predictionForm.carrier,
+      weight: this.predictionForm.weight
+    };
+
+    this.logisticsService.createShipment(dto).subscribe({
+      next: () => {
+        this.successMessage = 'Shipment created successfully! Check your dashboard for details.';
+        this.creating = false;
+        // Refresh notification bell (backend sends creation notification via SignalR)
+        this.notificationService.refreshUnreadCount();
+      },
+      error: (error: any) => {
+        console.error('Error creating shipment:', error);
+        this.errorMessage = 'Failed to create shipment. Please try again.';
+        this.creating = false;
+      }
+    });
   }
 
   validateForm(): boolean {
@@ -66,15 +108,11 @@ export class PredictionComponent {
   }
 
   reset(): void {
-    this.predictionForm = {
-      origin: '',
-      destination: '',
-      weight: 0,
-      carrier: ''
-    };
+    this.predictionForm = { origin: '', destination: '', weight: 0, carrier: '' };
     this.result = null;
-    this.submitted = false;
     this.errorMessage = '';
+    this.successMessage = '';
+    this.delayNotificationMessage = '';
   }
 
   getRiskLevelClass(riskLevel: string): string {

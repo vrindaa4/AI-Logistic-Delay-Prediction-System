@@ -10,7 +10,6 @@ public static class DbSeeder
 
     public static void Seed(LogisticsDbContext context)
     {
-        // 1. Create demo user if not exists
         var demoUser = context.Users.FirstOrDefault(u => u.Email == DemoEmail);
 
         if (demoUser == null)
@@ -26,7 +25,6 @@ public static class DbSeeder
             context.SaveChanges();
         }
 
-        // 2. Seed demo shipments if the demo user has none
         bool demoHasShipments = context.Shipments.Any(s => s.UserId == demoUser.Id);
 
         if (!demoHasShipments)
@@ -94,7 +92,6 @@ public static class DbSeeder
             context.SaveChanges();
         }
 
-        // 3. Reassign any orphaned shipments to demo user
         var orphanedShipments = context.Shipments
             .Where(s => s.UserId == null)
             .ToList();

@@ -84,16 +84,21 @@ public class ShipmentRepository : IShipmentRepository
         _context.SaveChanges();
         return shipment;
     }
+    public bool ExistsByTrackingNumber(string trackingNumber)
+    => _context.Shipments.Any(s => s.TrackingNumber == trackingNumber);
 
     public void Update(Shipment shipment)
+{
+    var existing = _context.Shipments.FirstOrDefault(s => s.Id == shipment.Id);
+    if (existing != null)
     {
-        var existing = _context.Shipments.FirstOrDefault(s => s.Id == shipment.Id);
-        if (existing != null)
-        {
-            existing.Status = shipment.Status;
-            _context.SaveChanges();
-        }
+        existing.Status = shipment.Status;
+        existing.ShipmentNumber = shipment.ShipmentNumber;
+        existing.TrackingNumber = shipment.TrackingNumber;
+        existing.Weight = shipment.Weight; 
+        _context.SaveChanges();
     }
+}
 
     public void Delete(int id)
     {
